@@ -18,6 +18,7 @@ from algorithms.pattern_matcher import PatternMatcher
 from algorithms.risk_scorer import RiskScorer, ThreatClassifier
 from algorithms.url_parser import URLParser
 from algorithms.phone_parser import PhoneParser
+from algorithms.modern_scam_detector import ModernScamDetector
 from .llm_service import LLMService
 
 logger = logging.getLogger('scamlytic.services.message')
@@ -60,6 +61,7 @@ class MessageAnalyzerService:
         self.url_parser = URLParser()
         self.phone_parser = PhoneParser()
         self.llm_service = LLMService()
+        self.modern_scam_detector = ModernScamDetector()
 
     def analyze(
         self,
@@ -130,6 +132,30 @@ class MessageAnalyzerService:
             # 3. Advanced pattern matching
             match_result = self.pattern_matcher.match(content)
 
+            # 3.5. Modern scam detection (Pig Butchering, Sextortion, Quishing, etc.)
+            modern_scam_results = self.modern_scam_detector.detect(content)
+            if modern_scam_results:
+                result.pattern_analysis['modern_scams'] = [
+                    {
+                        'scam_type': scam.scam_type,
+                        'confidence': scam.confidence,
+                        'matched_patterns': scam.matched_patterns,
+                        'description': scam.description,
+                        'severity': scam.severity,
+                    }
+                    for scam in modern_scam_results
+                ]
+
+            # Detect crypto wallets in text
+            crypto_wallets = self.modern_scam_detector.detect_crypto_wallet(content)
+            if crypto_wallets:
+                result.pattern_analysis['crypto_wallets'] = crypto_wallets
+
+            # Detect QR code context (Quishing indicators)
+            qr_context = self.modern_scam_detector.detect_qr_code_context(content)
+            if qr_context['has_qr_reference']:
+                result.pattern_analysis['qr_code_context'] = qr_context
+
             # 4. Analyze extracted URLs
             if text_result.urls_found:
                 for url in text_result.urls_found[:5]:  # Limit to 5 URLs
@@ -182,7 +208,8 @@ class MessageAnalyzerService:
 
             # 7. Aggregate signals
             detected_signals = self._aggregate_signals(
-                text_result, pattern_result, match_result, result
+                text_result, pattern_result, match_result, result,
+                modern_scam_results
             )
 
             # 8. Calculate final risk score
@@ -208,6 +235,16 @@ class MessageAnalyzerService:
                 )
                 if pattern_threat != 'LIKELY_SAFE':
                     threat_type = pattern_threat
+
+            # Modern scam type override (highest priority for new scam types)
+            if modern_scam_results:
+                # Get the highest severity modern scam
+                highest_severity_scam = max(
+                    modern_scam_results,
+                    key=lambda x: x.confidence * (3 if x.severity == 'critical' else 2 if x.severity == 'high' else 1)
+                )
+                if highest_severity_scam.confidence > 0.6:
+                    threat_type = highest_severity_scam.scam_type.upper().replace(' ', '_')
 
             # 10. Populate final result
             result.scam_score = risk_assessment.score
@@ -235,10 +272,12 @@ class MessageAnalyzerService:
         text_result,
         pattern_result: Dict[str, Any],
         match_result,
-        result: MessageAnalysisResult
+        result: MessageAnalysisResult,
+        modern_scam_results: List = None
     ) -> List[str]:
         """Aggregate all detected signals."""
         signals = set()
+        modern_scam_results = modern_scam_results or []
 
         # Text analysis signals
         if text_result.urgency_score > 0.7:
@@ -298,6 +337,39 @@ class MessageAnalyzerService:
                 signals.add('nin_phishing')
             elif llm_threat == 'PHISHING_URL':
                 signals.add('suspicious_url')
+
+        # Modern scam signals
+        for scam in modern_scam_results:
+            scam_type = scam.scam_type.lower()
+            if 'pig_butchering' in scam_type or 'pig butchering' in scam_type:
+                signals.add('pig_butchering_scam')
+            elif 'sextortion' in scam_type:
+                signals.add('sextortion_attempt')
+            elif 'quishing' in scam_type or 'qr' in scam_type:
+                signals.add('qr_code_phishing')
+            elif 'mfa' in scam_type or 'bypass' in scam_type:
+                signals.add('mfa_bypass_attempt')
+            elif 'crypto' in scam_type:
+                signals.add('crypto_scam')
+            elif 'romance' in scam_type:
+                signals.add('romance_scam')
+            elif 'ai_phishing' in scam_type or 'ai phishing' in scam_type:
+                signals.add('ai_generated_phishing')
+
+            # Add severity-based signals
+            if scam.severity == 'critical' and scam.confidence > 0.7:
+                signals.add('high_risk_modern_scam')
+            elif scam.severity == 'high' and scam.confidence > 0.6:
+                signals.add('elevated_risk_modern_scam')
+
+        # Crypto wallet signals
+        if result.pattern_analysis.get('crypto_wallets'):
+            signals.add('crypto_wallet_detected')
+
+        # QR code context signals
+        qr_context = result.pattern_analysis.get('qr_code_context', {})
+        if qr_context.get('has_qr_reference') and qr_context.get('risk_score', 0) > 50:
+            signals.add('suspicious_qr_code')
 
         # Add positive signals if applicable
         if not signals:

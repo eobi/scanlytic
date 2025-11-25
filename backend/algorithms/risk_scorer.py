@@ -96,6 +96,45 @@ class RiskScorer:
             'URL confirmed as phishing by threat intel'
         ),
 
+        # Modern scam critical signals
+        'pig_butchering_scam': Signal(
+            'pig_butchering_scam', 'Pig Butchering Scam',
+            SignalCategory.CRITICAL, 42,
+            'Investment/romance combo scam pattern detected'
+        ),
+        'sextortion_attempt': Signal(
+            'sextortion_attempt', 'Sextortion Attempt',
+            SignalCategory.CRITICAL, 45,
+            'Blackmail/extortion threat with intimate content'
+        ),
+        'mfa_bypass_attempt': Signal(
+            'mfa_bypass_attempt', 'MFA Bypass Attempt',
+            SignalCategory.CRITICAL, 40,
+            'Attempt to bypass multi-factor authentication'
+        ),
+        'high_risk_modern_scam': Signal(
+            'high_risk_modern_scam', 'High Risk Modern Scam',
+            SignalCategory.CRITICAL, 38,
+            'Modern scam pattern with high confidence'
+        ),
+
+        # Enhanced threat intel critical signals
+        'spamhaus_blocklisted': Signal(
+            'spamhaus_blocklisted', 'Spamhaus Blocklisted',
+            SignalCategory.CRITICAL, 40,
+            'Domain is blocklisted by Spamhaus'
+        ),
+        'openphish_detected': Signal(
+            'openphish_detected', 'OpenPhish Detection',
+            SignalCategory.CRITICAL, 42,
+            'URL detected in OpenPhish phishing feed'
+        ),
+        'crypto_scam_db_match': Signal(
+            'crypto_scam_db_match', 'Crypto Scam Database Match',
+            SignalCategory.CRITICAL, 40,
+            'Domain/wallet found in crypto scam database'
+        ),
+
         # High severity signals
         'account_threat': Signal(
             'account_threat', 'Account Suspension Threat',
@@ -138,6 +177,43 @@ class RiskScorer:
             'Profile image appears to be AI-generated'
         ),
 
+        # Modern scam high severity signals
+        'qr_code_phishing': Signal(
+            'qr_code_phishing', 'QR Code Phishing (Quishing)',
+            SignalCategory.HIGH, 30,
+            'QR code used in suspected phishing attempt'
+        ),
+        'crypto_scam': Signal(
+            'crypto_scam', 'Cryptocurrency Scam',
+            SignalCategory.HIGH, 28,
+            'Cryptocurrency fraud pattern detected'
+        ),
+        'romance_scam': Signal(
+            'romance_scam', 'Romance Scam',
+            SignalCategory.HIGH, 28,
+            'Romance scam manipulation pattern detected'
+        ),
+        'ai_generated_phishing': Signal(
+            'ai_generated_phishing', 'AI-Generated Phishing',
+            SignalCategory.HIGH, 32,
+            'AI-generated phishing content detected'
+        ),
+        'elevated_risk_modern_scam': Signal(
+            'elevated_risk_modern_scam', 'Elevated Risk Modern Scam',
+            SignalCategory.HIGH, 25,
+            'Modern scam pattern with moderate confidence'
+        ),
+        'high_risk_enhanced_intel': Signal(
+            'high_risk_enhanced_intel', 'High Risk Enhanced Intel',
+            SignalCategory.HIGH, 28,
+            'Multiple enhanced threat intel sources flag this'
+        ),
+        'blocklisted_domain': Signal(
+            'blocklisted_domain', 'Blocklisted Domain',
+            SignalCategory.HIGH, 30,
+            'Domain found in security blocklists'
+        ),
+
         # Moderate severity signals
         'suspicious_url': Signal(
             'suspicious_url', 'Suspicious URL',
@@ -178,6 +254,33 @@ class RiskScorer:
             'profile_inconsistencies', 'Profile Inconsistencies',
             SignalCategory.MODERATE, 15,
             'Profile information appears inconsistent'
+        ),
+
+        # Modern scam moderate severity signals
+        'suspicious_qr_code': Signal(
+            'suspicious_qr_code', 'Suspicious QR Code Context',
+            SignalCategory.MODERATE, 15,
+            'QR code mentioned in suspicious context'
+        ),
+        'crypto_wallet_detected': Signal(
+            'crypto_wallet_detected', 'Crypto Wallet Detected',
+            SignalCategory.MODERATE, 12,
+            'Cryptocurrency wallet address in message'
+        ),
+        'low_trust_score': Signal(
+            'low_trust_score', 'Low Trust Score',
+            SignalCategory.MODERATE, 18,
+            'Website has low trust score from reputation services'
+        ),
+        'elevated_risk_enhanced_intel': Signal(
+            'elevated_risk_enhanced_intel', 'Elevated Risk Enhanced Intel',
+            SignalCategory.MODERATE, 15,
+            'Some enhanced threat intel sources raise concerns'
+        ),
+        'high_manipulation': Signal(
+            'high_manipulation', 'High Manipulation Score',
+            SignalCategory.MODERATE, 18,
+            'Message contains manipulative language patterns'
         ),
 
         # Low severity signals
@@ -472,19 +575,28 @@ class ThreatClassifier:
     """
 
     THREAT_MAPPINGS = {
-        'PHISHING_URL': ['phishing_confirmed', 'suspicious_url', 'malware_detected'],
+        # Traditional scam types
+        'PHISHING_URL': ['phishing_confirmed', 'suspicious_url', 'malware_detected', 'openphish_detected'],
         'BVN_PHISHING': ['bvn_phishing'],
         'NIN_PHISHING': ['nin_phishing'],
         'BANK_IMPERSONATION': ['account_threat', 'password_request', 'card_request'],
         'LOTTERY_SCAM': ['prize_claim'],
         'ADVANCE_FEE': ['inheritance_scam', 'wire_transfer_request'],
-        'ROMANCE_SCAM': ['image_found_elsewhere', 'profile_inconsistencies'],
+        'ROMANCE_SCAM': ['image_found_elsewhere', 'profile_inconsistencies', 'romance_scam'],
         'JOB_SCAM': [],  # Detected through pattern matching
-        'INVESTMENT_SCAM': [],
-        'CRYPTO_SCAM': [],
+        'INVESTMENT_SCAM': ['pig_butchering_scam'],
         'IMPERSONATION': ['ai_generated_image', 'image_found_elsewhere'],
         'GOVERNMENT_SCAM': [],
         'CATFISH': ['ai_generated_image', 'image_found_elsewhere', 'profile_inconsistencies'],
+
+        # Modern scam types (2023-2024 emerging threats)
+        'PIG_BUTCHERING': ['pig_butchering_scam', 'crypto_scam', 'romance_scam'],
+        'SEXTORTION': ['sextortion_attempt'],
+        'QUISHING': ['qr_code_phishing', 'suspicious_qr_code'],
+        'MFA_BYPASS': ['mfa_bypass_attempt'],
+        'CRYPTO_SCAM': ['crypto_scam', 'crypto_wallet_detected', 'crypto_scam_db_match'],
+        'AI_PHISHING': ['ai_generated_phishing', 'high_manipulation'],
+        'BLOCKLISTED': ['spamhaus_blocklisted', 'blocklisted_domain'],
     }
 
     @classmethod
