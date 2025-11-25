@@ -75,6 +75,59 @@ class RiskScorer:
             SignalCategory.CRITICAL, 40,
             'Request for National ID Number detected'
         ),
+
+        # Global ID Phishing (Critical)
+        'ssn_phishing': Signal(
+            'ssn_phishing', 'SSN Phishing Attempt',
+            SignalCategory.CRITICAL, 45,
+            'Request for US Social Security Number detected'
+        ),
+        'aadhaar_phishing': Signal(
+            'aadhaar_phishing', 'Aadhaar Phishing Attempt',
+            SignalCategory.CRITICAL, 45,
+            'Request for Indian Aadhaar number detected'
+        ),
+        'pan_phishing': Signal(
+            'pan_phishing', 'PAN Phishing Attempt',
+            SignalCategory.CRITICAL, 42,
+            'Request for Indian PAN card number detected'
+        ),
+        'ni_phishing': Signal(
+            'ni_phishing', 'National Insurance Phishing',
+            SignalCategory.CRITICAL, 42,
+            'Request for UK National Insurance number detected'
+        ),
+        'sa_id_phishing': Signal(
+            'sa_id_phishing', 'South African ID Phishing',
+            SignalCategory.CRITICAL, 42,
+            'Request for South African ID number detected'
+        ),
+        'kenya_id_phishing': Signal(
+            'kenya_id_phishing', 'Kenyan ID Phishing',
+            SignalCategory.CRITICAL, 42,
+            'Request for Kenyan national ID or KRA PIN detected'
+        ),
+        'ghana_id_phishing': Signal(
+            'ghana_id_phishing', 'Ghana Card Phishing',
+            SignalCategory.CRITICAL, 42,
+            'Request for Ghana Card number detected'
+        ),
+        'mobile_money_phishing': Signal(
+            'mobile_money_phishing', 'Mobile Money Phishing',
+            SignalCategory.CRITICAL, 45,
+            'Request for mobile money PIN (M-Pesa, UPI, etc.)'
+        ),
+        'critical_id_phishing': Signal(
+            'critical_id_phishing', 'Critical ID Phishing',
+            SignalCategory.CRITICAL, 40,
+            'Attempt to steal critical identity document'
+        ),
+        'high_risk_id_phishing': Signal(
+            'high_risk_id_phishing', 'High Risk ID Phishing',
+            SignalCategory.HIGH, 30,
+            'Attempt to steal government-issued ID'
+        ),
+
         'password_request': Signal(
             'password_request', 'Password Request',
             SignalCategory.CRITICAL, 35,
@@ -586,8 +639,20 @@ class ThreatClassifier:
         'JOB_SCAM': [],  # Detected through pattern matching
         'INVESTMENT_SCAM': ['pig_butchering_scam'],
         'IMPERSONATION': ['ai_generated_image', 'image_found_elsewhere'],
-        'GOVERNMENT_SCAM': [],
+        'GOVERNMENT_SCAM': ['critical_id_phishing', 'high_risk_id_phishing'],
         'CATFISH': ['ai_generated_image', 'image_found_elsewhere', 'profile_inconsistencies'],
+
+        # Global ID Phishing (African focus)
+        'KENYA_ID_PHISHING': ['kenya_id_phishing'],
+        'GHANA_ID_PHISHING': ['ghana_id_phishing'],
+        'SA_ID_PHISHING': ['sa_id_phishing'],
+        'MOBILE_MONEY_SCAM': ['mobile_money_phishing'],
+
+        # Global ID Phishing (International)
+        'SSN_PHISHING': ['ssn_phishing'],
+        'AADHAAR_PHISHING': ['aadhaar_phishing'],
+        'PAN_PHISHING': ['pan_phishing'],
+        'NI_PHISHING': ['ni_phishing'],
 
         # Modern scam types (2023-2024 emerging threats)
         'PIG_BUTCHERING': ['pig_butchering_scam', 'crypto_scam', 'romance_scam'],

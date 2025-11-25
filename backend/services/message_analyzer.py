@@ -19,6 +19,7 @@ from algorithms.risk_scorer import RiskScorer, ThreatClassifier
 from algorithms.url_parser import URLParser
 from algorithms.phone_parser import PhoneParser
 from algorithms.modern_scam_detector import ModernScamDetector
+from algorithms.global_id_detector import GlobalIDDetector
 from .llm_service import LLMService
 
 logger = logging.getLogger('scamlytic.services.message')
@@ -62,6 +63,7 @@ class MessageAnalyzerService:
         self.phone_parser = PhoneParser()
         self.llm_service = LLMService()
         self.modern_scam_detector = ModernScamDetector()
+        self.global_id_detector = GlobalIDDetector()
 
     def analyze(
         self,
@@ -155,6 +157,20 @@ class MessageAnalyzerService:
             qr_context = self.modern_scam_detector.detect_qr_code_context(content)
             if qr_context['has_qr_reference']:
                 result.pattern_analysis['qr_code_context'] = qr_context
+
+            # 3.6. Global ID phishing detection (African IDs priority, then global)
+            id_detection_result = self.global_id_detector.detect(content)
+            if id_detection_result.detected:
+                result.pattern_analysis['id_phishing'] = {
+                    'detected': True,
+                    'id_types': id_detection_result.id_types,
+                    'severity': id_detection_result.severity.value,
+                    'countries': id_detection_result.countries,
+                    'region': id_detection_result.region.value if id_detection_result.region else None,
+                    'risk_score': id_detection_result.risk_score,
+                    'matched_patterns': id_detection_result.matched_patterns,
+                    'recommendations': id_detection_result.recommendations,
+                }
 
             # 4. Analyze extracted URLs
             if text_result.urls_found:
@@ -370,6 +386,41 @@ class MessageAnalyzerService:
         qr_context = result.pattern_analysis.get('qr_code_context', {})
         if qr_context.get('has_qr_reference') and qr_context.get('risk_score', 0) > 50:
             signals.add('suspicious_qr_code')
+
+        # Global ID phishing signals
+        id_phishing = result.pattern_analysis.get('id_phishing', {})
+        if id_phishing.get('detected'):
+            severity = id_phishing.get('severity', '')
+            id_types = id_phishing.get('id_types', [])
+
+            # Add specific ID type signals
+            for id_type in id_types:
+                if id_type in ['ng_bvn']:
+                    signals.add('bvn_phishing')
+                elif id_type in ['ng_nin']:
+                    signals.add('nin_phishing')
+                elif id_type in ['us_ssn']:
+                    signals.add('ssn_phishing')
+                elif id_type in ['in_aadhaar']:
+                    signals.add('aadhaar_phishing')
+                elif id_type in ['in_pan']:
+                    signals.add('pan_phishing')
+                elif id_type in ['gb_nino']:
+                    signals.add('ni_phishing')
+                elif id_type in ['za_id_number']:
+                    signals.add('sa_id_phishing')
+                elif id_type in ['ke_kra_pin', 'ke_national_id']:
+                    signals.add('kenya_id_phishing')
+                elif id_type in ['gh_ghana_card']:
+                    signals.add('ghana_id_phishing')
+                elif id_type in ['ke_mpesa', 'in_upi']:
+                    signals.add('mobile_money_phishing')
+
+            # Add severity-based signals
+            if severity == 'critical':
+                signals.add('critical_id_phishing')
+            elif severity == 'high':
+                signals.add('high_risk_id_phishing')
 
         # Add positive signals if applicable
         if not signals:
