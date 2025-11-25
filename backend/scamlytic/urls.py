@@ -33,6 +33,9 @@ urlpatterns = [
 
         # Integrations & Webhooks
         path('integrations/', include('apps.integrations.urls')),
+
+        # Billing & Subscriptions
+        path('billing/', include('apps.billing.urls')),
     ])),
 ]
 

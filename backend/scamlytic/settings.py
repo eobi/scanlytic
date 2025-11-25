@@ -54,6 +54,7 @@ INSTALLED_APPS = [
     'apps.analysis',
     'apps.reports',
     'apps.integrations',
+    'apps.billing',
 ]
 
 MIDDLEWARE = [
@@ -68,6 +69,8 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'apps.core.middleware.RateLimitMiddleware',
     'apps.core.middleware.RequestLoggingMiddleware',
+    'apps.billing.middleware.UsageMeteringMiddleware',
+    'apps.billing.middleware.UsageHeadersMiddleware',
 ]
 
 ROOT_URLCONF = 'scamlytic.urls'
@@ -308,6 +311,23 @@ SERPAPI_API_KEY = env('SERPAPI_API_KEY', default='')
 
 # Serper.dev API (Google Search & Reverse Image Search)
 SERPER_API_KEY = env('SERPER_API_KEY', default='')
+
+# =============================================================================
+# Stripe Billing Configuration
+# =============================================================================
+
+STRIPE_SECRET_KEY = env('STRIPE_SECRET_KEY', default='')
+STRIPE_PUBLISHABLE_KEY = env('STRIPE_PUBLISHABLE_KEY', default='')
+STRIPE_WEBHOOK_SECRET = env('STRIPE_WEBHOOK_SECRET', default='')
+
+# Stripe Checkout URLs
+STRIPE_SUCCESS_URL = env('STRIPE_SUCCESS_URL', default='https://scamlytic.com/billing/success')
+STRIPE_CANCEL_URL = env('STRIPE_CANCEL_URL', default='https://scamlytic.com/billing/cancel')
+STRIPE_PORTAL_RETURN_URL = env('STRIPE_PORTAL_RETURN_URL', default='https://scamlytic.com/dashboard')
+
+# Free tier limits
+FREE_DAILY_LIMIT = env.int('FREE_DAILY_LIMIT', default=10)
+FREE_MONTHLY_LIMIT = env.int('FREE_MONTHLY_LIMIT', default=100)
 
 # =============================================================================
 # LLM API Keys Configuration
