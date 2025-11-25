@@ -20,6 +20,7 @@ from algorithms.url_parser import URLParser
 from algorithms.pattern_matcher import DomainPatternMatcher
 from algorithms.risk_scorer import RiskScorer
 from .threat_intelligence import ThreatIntelligenceService
+from .enhanced_threat_intel import EnhancedThreatIntelligence
 
 logger = logging.getLogger('scamlytic.services.url')
 
@@ -54,6 +55,9 @@ class URLAnalysisResult:
     # Threat intelligence
     threat_intel: Dict[str, Any] = field(default_factory=dict)
 
+    # Enhanced threat intelligence (additional sources)
+    enhanced_threat_intel: Dict[str, Any] = field(default_factory=dict)
+
     # Detailed analysis
     url_analysis: Dict[str, Any] = field(default_factory=dict)
     domain_analysis: Dict[str, Any] = field(default_factory=dict)
@@ -74,6 +78,7 @@ class URLAnalyzerService:
         self.domain_matcher = DomainPatternMatcher()
         self.risk_scorer = RiskScorer()
         self.threat_intel = ThreatIntelligenceService()
+        self.enhanced_threat_intel = EnhancedThreatIntelligence()
 
     def analyze(
         self,
@@ -168,7 +173,7 @@ class URLAnalyzerService:
                 except Exception as e:
                     logger.warning(f"WHOIS lookup failed: {e}")
 
-                # Threat intelligence
+                # Threat intelligence (primary sources: VirusTotal, Google Safe Browsing, etc.)
                 try:
                     threat_intel_result = self.threat_intel.analyze_url(url)
                     result.threat_intel = {
@@ -186,6 +191,37 @@ class URLAnalyzerService:
                 except Exception as e:
                     logger.error(f"Threat intel failed: {e}")
                     result.threat_intel = {'error': str(e)}
+
+                # Enhanced threat intelligence (additional sources: ScamAdviser, OpenPhish, CryptoScamDB, etc.)
+                try:
+                    enhanced_result = self.enhanced_threat_intel.comprehensive_url_check(url)
+                    result.enhanced_threat_intel = {
+                        'overall_score': enhanced_result.get('overall_score', 0),
+                        'is_malicious': enhanced_result.get('overall_score', 0) > 60,
+                        'spamhaus': enhanced_result.get('spamhaus', {}),
+                        'openphish': enhanced_result.get('openphish', {}),
+                        'scamadviser': enhanced_result.get('scamadviser', {}),
+                        'crypto_scam_db': enhanced_result.get('crypto_scam_db', {}),
+                        'sources_checked': enhanced_result.get('sources_checked', []),
+                    }
+
+                    # Merge enhanced threat intel into primary if it finds issues
+                    if enhanced_result.get('overall_score', 0) > 60:
+                        result.threat_intel['is_malicious'] = True
+                        if not result.threat_intel.get('threat_types'):
+                            result.threat_intel['threat_types'] = []
+
+                        # Add specific threat types from enhanced sources
+                        if enhanced_result.get('openphish', {}).get('is_phishing'):
+                            result.threat_intel['threat_types'].append('PHISHING_URL')
+                        if enhanced_result.get('crypto_scam_db', {}).get('is_scam'):
+                            result.threat_intel['threat_types'].append('CRYPTO_SCAM')
+                        if enhanced_result.get('spamhaus', {}).get('is_blocklisted'):
+                            result.threat_intel['threat_types'].append('BLOCKLISTED_DOMAIN')
+
+                except Exception as e:
+                    logger.warning(f"Enhanced threat intel failed: {e}")
+                    result.enhanced_threat_intel = {'error': str(e)}
 
             # 5. Aggregate signals
             detected_signals = self._aggregate_signals(result, url_analysis, domain_analysis)
@@ -327,12 +363,35 @@ class URLAnalyzerService:
                 signals.add('malware_detected')
             if 'PHISHING_URL' in threat_types:
                 signals.add('phishing_confirmed')
+            if 'CRYPTO_SCAM' in threat_types:
+                signals.add('crypto_scam')
+            if 'BLOCKLISTED_DOMAIN' in threat_types:
+                signals.add('blocklisted_domain')
+
+        # Enhanced threat intelligence signals
+        enhanced = result.enhanced_threat_intel
+        if enhanced and not enhanced.get('error'):
+            if enhanced.get('spamhaus', {}).get('is_blocklisted'):
+                signals.add('spamhaus_blocklisted')
+            if enhanced.get('openphish', {}).get('is_phishing'):
+                signals.add('openphish_detected')
+            if enhanced.get('crypto_scam_db', {}).get('is_scam'):
+                signals.add('crypto_scam_db_match')
+            if enhanced.get('scamadviser', {}).get('trust_score', 100) < 50:
+                signals.add('low_trust_score')
+
+            # Overall enhanced score
+            overall_score = enhanced.get('overall_score', 0)
+            if overall_score > 80:
+                signals.add('high_risk_enhanced_intel')
+            elif overall_score > 60:
+                signals.add('elevated_risk_enhanced_intel')
 
         # Add positive signals if applicable
         if domain_analysis.get('is_legitimate'):
             signals.add('known_brand')
 
-        if not result.threat_intel.get('is_malicious'):
+        if not result.threat_intel.get('is_malicious') and not enhanced.get('is_malicious'):
             signals.add('no_blocklist_match')
 
         return list(signals)
