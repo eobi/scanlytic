@@ -17,6 +17,7 @@ from django.conf import settings
 from django.core.cache import cache
 
 from algorithms.risk_scorer import RiskScorer
+from .serper_service import SerperService, CatfishDetector
 
 logger = logging.getLogger('scamlytic.services.image')
 
@@ -85,6 +86,8 @@ class ImageAnalyzerService:
 
     def __init__(self):
         self.risk_scorer = RiskScorer()
+        self.serper_service = SerperService()
+        self.catfish_detector = CatfishDetector()
         self._init_services()
 
     def _init_services(self):
@@ -364,37 +367,70 @@ class ImageAnalyzerService:
         image_data: Optional[bytes] = None
     ) -> Dict[str, Any]:
         """
-        Perform reverse image search.
+        Perform reverse image search using Serper.dev API.
 
-        Note: This is a placeholder. Real implementation would integrate
-        with TinEye, Google Vision, or similar APIs.
+        Uses Google Lens via Serper for comprehensive reverse image search.
         """
         result = {
             'matches': [],
             'found_elsewhere': False,
             'match_count': 0,
             'is_stock_photo': False,
-            'stock_source': ''
+            'stock_source': '',
+            'social_profiles': [],
+            'websites': [],
         }
 
-        # TinEye API integration
-        if settings.TINEYE_API_KEY:
+        # Primary: Serper.dev reverse image search (Google Lens)
+        if self.serper_service.is_available() and image_url:
             try:
-                # TinEye API call would go here
-                pass
+                serper_result = self.serper_service.reverse_image_search(
+                    image_url=image_url,
+                    num_results=20
+                )
+
+                if serper_result.get('success'):
+                    result['matches'] = serper_result.get('matches', [])
+                    result['found_elsewhere'] = serper_result.get('image_found_elsewhere', False)
+                    result['match_count'] = serper_result.get('total_matches', 0)
+                    result['is_stock_photo'] = serper_result.get('is_stock_photo', False)
+                    result['stock_source'] = serper_result.get('stock_photo_source', '')
+                    result['social_profiles'] = serper_result.get('social_profiles', [])
+                    result['websites'] = serper_result.get('websites', [])
+
+                    # Add identified entity if found
+                    if serper_result.get('identified_entity'):
+                        result['identified_entity'] = serper_result['identified_entity']
+
+                    logger.info(f"Serper reverse image search found {result['match_count']} matches")
+
+            except Exception as e:
+                logger.error(f"Serper reverse image search failed: {e}")
+
+        # Fallback: TinEye API integration
+        if not result['matches'] and getattr(settings, 'TINEYE_API_KEY', None):
+            try:
+                tineye_result = self._tineye_search(image_url, image_data)
+                if tineye_result:
+                    result['matches'].extend(tineye_result.get('matches', []))
+                    result['match_count'] = len(result['matches'])
+                    result['found_elsewhere'] = result['match_count'] > 0
             except Exception as e:
                 logger.error(f"TinEye search failed: {e}")
 
-        # Google Cloud Vision API integration
-        if settings.GOOGLE_CLOUD_VISION_KEY:
+        # Fallback: Google Cloud Vision API
+        if not result['matches'] and getattr(settings, 'GOOGLE_CLOUD_VISION_KEY', None):
             try:
-                # Google Vision API call would go here
-                pass
+                vision_result = self._google_vision_search(image_url, image_data)
+                if vision_result:
+                    result['matches'].extend(vision_result.get('matches', []))
+                    result['match_count'] = len(result['matches'])
+                    result['found_elsewhere'] = result['match_count'] > 0
             except Exception as e:
                 logger.error(f"Google Vision search failed: {e}")
 
-        # Check for stock photo indicators in URL
-        if image_url:
+        # Check for stock photo indicators in URL (fallback check)
+        if image_url and not result['is_stock_photo']:
             for domain in self.STOCK_PHOTO_DOMAINS:
                 if domain in image_url.lower():
                     result['is_stock_photo'] = True
@@ -403,6 +439,112 @@ class ImageAnalyzerService:
                     break
 
         return result
+
+    def _tineye_search(
+        self,
+        image_url: Optional[str] = None,
+        image_data: Optional[bytes] = None
+    ) -> Optional[Dict[str, Any]]:
+        """TinEye API reverse image search."""
+        try:
+            import requests
+
+            api_key = getattr(settings, 'TINEYE_API_KEY', None)
+            if not api_key:
+                return None
+
+            url = 'https://api.tineye.com/rest/search/'
+            headers = {'X-Api-Key': api_key}
+
+            if image_url:
+                response = requests.post(
+                    url,
+                    headers=headers,
+                    data={'url': image_url},
+                    timeout=30
+                )
+            elif image_data:
+                response = requests.post(
+                    url,
+                    headers=headers,
+                    files={'image': ('image.jpg', image_data)},
+                    timeout=30
+                )
+            else:
+                return None
+
+            if response.status_code == 200:
+                data = response.json()
+                matches = data.get('results', {}).get('matches', [])
+                return {
+                    'matches': [
+                        {
+                            'url': m.get('backlinks', [{}])[0].get('url', ''),
+                            'domain': m.get('domain', ''),
+                        }
+                        for m in matches[:20]
+                    ]
+                }
+
+        except Exception as e:
+            logger.error(f"TinEye API error: {e}")
+
+        return None
+
+    def _google_vision_search(
+        self,
+        image_url: Optional[str] = None,
+        image_data: Optional[bytes] = None
+    ) -> Optional[Dict[str, Any]]:
+        """Google Cloud Vision API web detection."""
+        try:
+            from google.cloud import vision
+
+            client = vision.ImageAnnotatorClient()
+
+            if image_url:
+                image = vision.Image()
+                image.source.image_uri = image_url
+            elif image_data:
+                image = vision.Image(content=image_data)
+            else:
+                return None
+
+            response = client.web_detection(image=image)
+            web = response.web_detection
+
+            matches = []
+
+            # Full matching images
+            for match in web.full_matching_images[:10]:
+                matches.append({
+                    'url': match.url,
+                    'type': 'full_match',
+                })
+
+            # Partial matching images
+            for match in web.partial_matching_images[:10]:
+                matches.append({
+                    'url': match.url,
+                    'type': 'partial_match',
+                })
+
+            # Pages with matching images
+            for page in web.pages_with_matching_images[:10]:
+                matches.append({
+                    'url': page.url,
+                    'title': page.page_title,
+                    'type': 'page_match',
+                })
+
+            return {'matches': matches}
+
+        except ImportError:
+            logger.warning("Google Cloud Vision library not installed")
+        except Exception as e:
+            logger.error(f"Google Vision API error: {e}")
+
+        return None
 
     def _analyze_profile(self, profile_url: str) -> Dict[str, Any]:
         """Analyze social media profile."""
