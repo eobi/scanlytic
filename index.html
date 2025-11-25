@@ -1,0 +1,638 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scamlytic - AI-Powered Scam Detection | Protect Yourself from Fraud</title>
+    <meta name="description" content="Instantly detect scams, phishing, and fraud. Analyze suspicious messages, URLs, phone numbers, and profiles in seconds. Free to use, no signup required.">
+    <meta name="keywords" content="scam detector, fraud detection, phishing checker, catfish detector, Nigerian scam, BVN scam, romance scam">
+
+    <!-- Open Graph / Social Media -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://scamlytic.com/">
+    <meta property="og:title" content="Scamlytic - Is This a Scam? Find Out in Seconds">
+    <meta property="og:description" content="AI-powered scam detection for everyone. Check messages, URLs, phone numbers, and profiles instantly.">
+    <meta property="og:image" content="https://scamlytic.com/assets/og-image.png">
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://scamlytic.com/">
+    <meta property="twitter:title" content="Scamlytic - Is This a Scam? Find Out in Seconds">
+    <meta property="twitter:description" content="AI-powered scam detection for everyone. Check messages, URLs, phone numbers, and profiles instantly.">
+
+    <!-- Fonts & Icons -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <!-- Styles -->
+    <link rel="stylesheet" href="css/style.css">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🛡️</text></svg>">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="index.html" class="nav-logo">
+                <i class="fas fa-shield-halved"></i>
+                <span>Scamlytic</span>
+            </a>
+            <ul class="nav-links">
+                <li><a href="#scanner" class="nav-link">Scanner</a></li>
+                <li><a href="#features" class="nav-link">Features</a></li>
+                <li><a href="developers.html" class="nav-link">API</a></li>
+                <li><a href="pricing.html" class="nav-link">Pricing</a></li>
+            </ul>
+            <div class="nav-actions">
+                <a href="developers.html" class="btn btn-ghost">Get API Key</a>
+                <a href="pricing.html" class="btn btn-primary">Go Pro</a>
+            </div>
+            <button class="mobile-menu-btn" aria-label="Toggle menu">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-bg">
+            <div class="hero-gradient"></div>
+            <div class="hero-grid"></div>
+        </div>
+        <div class="container">
+            <div class="hero-content">
+                <div class="hero-badge">
+                    <i class="fas fa-bolt"></i>
+                    <span>Trusted by 50,000+ users</span>
+                </div>
+                <h1 class="hero-title">
+                    Is This a <span class="gradient-text">Scam?</span><br>
+                    Find Out in Seconds
+                </h1>
+                <p class="hero-subtitle">
+                    AI-powered protection against fraud, phishing, and scams.
+                    Analyze messages, URLs, phone numbers, or check if someone is real.
+                    <strong>No signup required.</strong>
+                </p>
+
+                <!-- Main Scanner -->
+                <div class="scanner-card" id="scanner">
+                    <div class="scanner-tabs">
+                        <button class="scanner-tab active" data-tab="message">
+                            <i class="fas fa-message"></i>
+                            <span>Message</span>
+                        </button>
+                        <button class="scanner-tab" data-tab="url">
+                            <i class="fas fa-link"></i>
+                            <span>URL</span>
+                        </button>
+                        <button class="scanner-tab" data-tab="phone">
+                            <i class="fas fa-phone"></i>
+                            <span>Phone</span>
+                        </button>
+                        <button class="scanner-tab" data-tab="catfish">
+                            <i class="fas fa-user-secret"></i>
+                            <span>Catfish</span>
+                        </button>
+                    </div>
+
+                    <div class="scanner-content">
+                        <!-- Message Scanner -->
+                        <div class="scanner-panel active" id="message-panel">
+                            <textarea
+                                class="scanner-input"
+                                id="message-input"
+                                placeholder="Paste the suspicious message here...&#10;&#10;Example: 'Dear Customer, Your BVN has been blocked. Click here to verify: bit.ly/xxxxx'"
+                                rows="5"
+                            ></textarea>
+                            <div class="scanner-footer">
+                                <span class="char-count"><span id="char-count">0</span>/5000</span>
+                                <button class="btn btn-scan" id="scan-message-btn">
+                                    <i class="fas fa-radar"></i>
+                                    <span>Analyze Message</span>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- URL Scanner -->
+                        <div class="scanner-panel" id="url-panel">
+                            <div class="input-group">
+                                <i class="fas fa-globe input-icon"></i>
+                                <input
+                                    type="url"
+                                    class="scanner-url-input"
+                                    id="url-input"
+                                    placeholder="https://suspicious-website.com/verify"
+                                >
+                            </div>
+                            <button class="btn btn-scan btn-full" id="scan-url-btn">
+                                <i class="fas fa-search"></i>
+                                <span>Check URL Safety</span>
+                            </button>
+                        </div>
+
+                        <!-- Phone Scanner -->
+                        <div class="scanner-panel" id="phone-panel">
+                            <div class="input-group">
+                                <i class="fas fa-phone input-icon"></i>
+                                <input
+                                    type="tel"
+                                    class="scanner-url-input"
+                                    id="phone-input"
+                                    placeholder="+234 801 234 5678"
+                                >
+                            </div>
+                            <button class="btn btn-scan btn-full" id="scan-phone-btn">
+                                <i class="fas fa-magnifying-glass"></i>
+                                <span>Check Phone Number</span>
+                            </button>
+                        </div>
+
+                        <!-- Catfish Detector -->
+                        <div class="scanner-panel" id="catfish-panel">
+                            <div class="catfish-upload">
+                                <div class="upload-zone" id="upload-zone">
+                                    <i class="fas fa-cloud-arrow-up"></i>
+                                    <p>Drop image here or <span class="upload-link">browse</span></p>
+                                    <span class="upload-hint">Profile photo or screenshot</span>
+                                    <input type="file" id="image-input" accept="image/*" hidden>
+                                </div>
+                                <div class="upload-preview" id="upload-preview" style="display: none;">
+                                    <img id="preview-image" src="" alt="Preview">
+                                    <button class="remove-image" id="remove-image">
+                                        <i class="fas fa-times"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="catfish-or">
+                                <span>or paste profile URL</span>
+                            </div>
+                            <div class="input-group">
+                                <i class="fab fa-instagram input-icon"></i>
+                                <input
+                                    type="url"
+                                    class="scanner-url-input"
+                                    id="profile-input"
+                                    placeholder="https://instagram.com/username"
+                                >
+                            </div>
+                            <button class="btn btn-scan btn-full" id="scan-catfish-btn">
+                                <i class="fas fa-user-check"></i>
+                                <span>Is This Person Real?</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Trust Indicators -->
+                <div class="trust-bar">
+                    <div class="trust-item">
+                        <i class="fas fa-shield-check"></i>
+                        <span>500K+ Scans</span>
+                    </div>
+                    <div class="trust-item">
+                        <i class="fas fa-clock"></i>
+                        <span>&lt;3s Response</span>
+                    </div>
+                    <div class="trust-item">
+                        <i class="fas fa-chart-line"></i>
+                        <span>94% Accuracy</span>
+                    </div>
+                    <div class="trust-item">
+                        <i class="fas fa-lock"></i>
+                        <span>Private & Secure</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Results Modal -->
+    <div class="modal" id="results-modal">
+        <div class="modal-backdrop"></div>
+        <div class="modal-content">
+            <button class="modal-close" id="modal-close">
+                <i class="fas fa-times"></i>
+            </button>
+
+            <!-- Loading State -->
+            <div class="modal-loading" id="modal-loading">
+                <div class="scanner-animation">
+                    <div class="scanner-ring"></div>
+                    <div class="scanner-ring"></div>
+                    <div class="scanner-ring"></div>
+                    <i class="fas fa-shield-halved scanner-icon"></i>
+                </div>
+                <h3>Analyzing...</h3>
+                <p>Checking against multiple databases</p>
+                <div class="loading-steps">
+                    <div class="loading-step active">
+                        <i class="fas fa-check"></i>
+                        <span>URL Reputation</span>
+                    </div>
+                    <div class="loading-step">
+                        <i class="fas fa-spinner fa-spin"></i>
+                        <span>Language Patterns</span>
+                    </div>
+                    <div class="loading-step">
+                        <i class="fas fa-circle"></i>
+                        <span>AI Intent Analysis</span>
+                    </div>
+                    <div class="loading-step">
+                        <i class="fas fa-circle"></i>
+                        <span>Known Scam Patterns</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Results State -->
+            <div class="modal-results" id="modal-results" style="display: none;">
+                <div class="result-header">
+                    <div class="result-score-ring critical" id="result-score-ring">
+                        <svg viewBox="0 0 100 100">
+                            <circle cx="50" cy="50" r="45" class="score-bg"></circle>
+                            <circle cx="50" cy="50" r="45" class="score-fill" id="score-circle"></circle>
+                        </svg>
+                        <div class="score-value">
+                            <span class="score-number" id="score-number">94</span>
+                            <span class="score-label">Risk Score</span>
+                        </div>
+                    </div>
+                    <div class="result-verdict">
+                        <span class="verdict-badge critical" id="verdict-badge">
+                            <i class="fas fa-exclamation-triangle"></i>
+                            SCAM ALERT
+                        </span>
+                        <h3 class="threat-type" id="threat-type">Bank Impersonation Scam</h3>
+                    </div>
+                </div>
+
+                <div class="result-body">
+                    <div class="result-explanation">
+                        <h4><i class="fas fa-info-circle"></i> Analysis</h4>
+                        <p id="result-explanation">This message impersonates GTBank and attempts to steal your banking credentials through a phishing link. The URL is hosted on a recently registered domain with no connection to the actual bank.</p>
+                    </div>
+
+                    <div class="result-signals">
+                        <h4><i class="fas fa-flag"></i> Red Flags Detected</h4>
+                        <div class="signals-list" id="signals-list">
+                            <div class="signal-item critical">
+                                <i class="fas fa-link"></i>
+                                <span>Suspicious shortened URL</span>
+                            </div>
+                            <div class="signal-item critical">
+                                <i class="fas fa-building-columns"></i>
+                                <span>Fake bank impersonation</span>
+                            </div>
+                            <div class="signal-item high">
+                                <i class="fas fa-clock"></i>
+                                <span>Urgency tactics used</span>
+                            </div>
+                            <div class="signal-item moderate">
+                                <i class="fas fa-spell-check"></i>
+                                <span>Grammar inconsistencies</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="result-action">
+                        <h4><i class="fas fa-shield-check"></i> Recommended Action</h4>
+                        <p id="result-action">Do NOT click any links. Block the sender immediately. Report to your bank if you've already interacted with this message.</p>
+                    </div>
+                </div>
+
+                <div class="result-footer">
+                    <div class="share-section">
+                        <span class="share-label">Warn others:</span>
+                        <div class="share-buttons">
+                            <button class="share-btn whatsapp" id="share-whatsapp">
+                                <i class="fab fa-whatsapp"></i>
+                            </button>
+                            <button class="share-btn twitter" id="share-twitter">
+                                <i class="fab fa-x-twitter"></i>
+                            </button>
+                            <button class="share-btn facebook" id="share-facebook">
+                                <i class="fab fa-facebook-f"></i>
+                            </button>
+                            <button class="share-btn copy" id="share-copy">
+                                <i class="fas fa-copy"></i>
+                            </button>
+                            <button class="share-btn download" id="share-download">
+                                <i class="fas fa-download"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="result-cta">
+                        <button class="btn btn-ghost" id="scan-another">
+                            <i class="fas fa-plus"></i>
+                            Scan Another
+                        </button>
+                        <button class="btn btn-primary" id="report-scam">
+                            <i class="fas fa-flag"></i>
+                            Report Scam
+                        </button>
+                    </div>
+                </div>
+
+                <div class="result-watermark">
+                    <span>Verified by</span>
+                    <i class="fas fa-shield-halved"></i>
+                    <span>Scamlytic</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Features Section -->
+    <section class="features" id="features">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-badge">Why Scamlytic?</span>
+                <h2 class="section-title">Protection That <span class="gradient-text">Actually Works</span></h2>
+                <p class="section-subtitle">Unlike technical security tools, Scamlytic is built for real people facing real scams.</p>
+            </div>
+
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-bolt"></i>
+                    </div>
+                    <h3>Instant Analysis</h3>
+                    <p>Get results in under 3 seconds. No waiting, no signup, no friction.</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-brain"></i>
+                    </div>
+                    <h3>AI-Powered Detection</h3>
+                    <p>Advanced LLM analyzes intent and social engineering, not just keywords.</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-database"></i>
+                    </div>
+                    <h3>Multiple Data Sources</h3>
+                    <p>Cross-references PhishTank, Google Safe Browsing, and proprietary databases.</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-globe-africa"></i>
+                    </div>
+                    <h3>Africa-Optimized</h3>
+                    <p>Trained on Nigerian scam patterns: BVN, NIN, 419, and local fraud tactics.</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-user-secret"></i>
+                    </div>
+                    <h3>Catfish Detector</h3>
+                    <p>Verify if profile photos are stolen or appear on multiple fake accounts.</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-share-nodes"></i>
+                    </div>
+                    <h3>Easy Sharing</h3>
+                    <p>Share results instantly to warn friends and family on any platform.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Threat Types Section -->
+    <section class="threats">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-badge">What We Detect</span>
+                <h2 class="section-title">Scams We <span class="gradient-text">Catch Daily</span></h2>
+            </div>
+
+            <div class="threats-grid">
+                <div class="threat-card">
+                    <i class="fas fa-building-columns"></i>
+                    <h4>Bank Impersonation</h4>
+                    <span class="threat-count">2,340 caught</span>
+                </div>
+                <div class="threat-card">
+                    <i class="fas fa-id-card"></i>
+                    <h4>BVN/NIN Phishing</h4>
+                    <span class="threat-count">1,892 caught</span>
+                </div>
+                <div class="threat-card">
+                    <i class="fas fa-heart-crack"></i>
+                    <h4>Romance Scams</h4>
+                    <span class="threat-count">1,456 caught</span>
+                </div>
+                <div class="threat-card">
+                    <i class="fas fa-briefcase"></i>
+                    <h4>Job Scams</h4>
+                    <span class="threat-count">987 caught</span>
+                </div>
+                <div class="threat-card">
+                    <i class="fas fa-trophy"></i>
+                    <h4>Lottery/Prize Scams</h4>
+                    <span class="threat-count">1,234 caught</span>
+                </div>
+                <div class="threat-card">
+                    <i class="fas fa-coins"></i>
+                    <h4>Crypto/Forex Fraud</h4>
+                    <span class="threat-count">876 caught</span>
+                </div>
+                <div class="threat-card">
+                    <i class="fas fa-landmark"></i>
+                    <h4>Government Fee Scams</h4>
+                    <span class="threat-count">654 caught</span>
+                </div>
+                <div class="threat-card">
+                    <i class="fas fa-mask"></i>
+                    <h4>Catfish Profiles</h4>
+                    <span class="threat-count">2,100 caught</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- WhatsApp CTA Section -->
+    <section class="whatsapp-cta">
+        <div class="container">
+            <div class="whatsapp-card">
+                <div class="whatsapp-content">
+                    <div class="whatsapp-icon">
+                        <i class="fab fa-whatsapp"></i>
+                    </div>
+                    <div class="whatsapp-text">
+                        <h3>Check Scams on WhatsApp</h3>
+                        <p>Forward any suspicious message to our WhatsApp bot. No app download needed—just forward and get instant analysis.</p>
+                    </div>
+                </div>
+                <a href="https://wa.me/234XXXXXXXXX" class="btn btn-whatsapp" target="_blank">
+                    <i class="fab fa-whatsapp"></i>
+                    <span>Message Our Bot</span>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Developer CTA Section -->
+    <section class="developer-cta">
+        <div class="container">
+            <div class="dev-card">
+                <div class="dev-content">
+                    <span class="dev-badge">For Developers</span>
+                    <h3>Integrate Scam Detection Into Your App</h3>
+                    <p>Simple REST API. Comprehensive documentation. Start free.</p>
+                    <div class="dev-code">
+                        <pre><code><span class="code-keyword">POST</span> /v1/analyze/message
+{
+  <span class="code-string">"content"</span>: <span class="code-string">"Your BVN has been blocked..."</span>,
+  <span class="code-string">"context"</span>: <span class="code-string">"whatsapp"</span>
+}</code></pre>
+                    </div>
+                </div>
+                <div class="dev-actions">
+                    <a href="developers.html" class="btn btn-primary btn-lg">
+                        <i class="fas fa-code"></i>
+                        View API Docs
+                    </a>
+                    <a href="developers.html#signup" class="btn btn-ghost btn-lg">
+                        <i class="fas fa-key"></i>
+                        Get API Key
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials -->
+    <section class="testimonials">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-badge">Success Stories</span>
+                <h2 class="section-title">Scams We've <span class="gradient-text">Helped Stop</span></h2>
+            </div>
+
+            <div class="testimonials-grid">
+                <div class="testimonial-card">
+                    <div class="testimonial-content">
+                        <p>"I almost sent N500,000 to what I thought was my daughter's school. Scamlytic caught the scam in seconds."</p>
+                    </div>
+                    <div class="testimonial-author">
+                        <div class="author-avatar">MT</div>
+                        <div class="author-info">
+                            <strong>Mama Tolu</strong>
+                            <span>Lagos, Nigeria</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="testimonial-card">
+                    <div class="testimonial-content">
+                        <p>"Found out my 'girlfriend' of 6 months was using stolen photos. Her profile pic was on 47 other accounts!"</p>
+                    </div>
+                    <div class="testimonial-author">
+                        <div class="author-avatar">AO</div>
+                        <div class="author-info">
+                            <strong>Adewale O.</strong>
+                            <span>Ibadan, Nigeria</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="testimonial-card">
+                    <div class="testimonial-content">
+                        <p>"We integrated Scamlytic into our customer support. Blocked 3,000+ scam reports in the first month."</p>
+                    </div>
+                    <div class="testimonial-author">
+                        <div class="author-avatar">FK</div>
+                        <div class="author-info">
+                            <strong>Fintech Company</strong>
+                            <span>API Customer</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Final CTA -->
+    <section class="final-cta">
+        <div class="container">
+            <div class="cta-content">
+                <h2>Don't Get Scammed</h2>
+                <p>Check that suspicious message now. It takes 3 seconds.</p>
+                <a href="#scanner" class="btn btn-primary btn-xl">
+                    <i class="fas fa-shield-halved"></i>
+                    Start Scanning Free
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-brand">
+                    <a href="index.html" class="footer-logo">
+                        <i class="fas fa-shield-halved"></i>
+                        <span>Scamlytic</span>
+                    </a>
+                    <p>AI-powered scam detection for everyone. Making fraud prevention accessible to all.</p>
+                    <div class="footer-social">
+                        <a href="#" aria-label="Twitter"><i class="fab fa-x-twitter"></i></a>
+                        <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                        <a href="#" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+                        <a href="#" aria-label="WhatsApp"><i class="fab fa-whatsapp"></i></a>
+                    </div>
+                </div>
+
+                <div class="footer-links">
+                    <h4>Product</h4>
+                    <ul>
+                        <li><a href="#scanner">Scanner</a></li>
+                        <li><a href="developers.html">API</a></li>
+                        <li><a href="pricing.html">Pricing</a></li>
+                        <li><a href="#">WhatsApp Bot</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-links">
+                    <h4>Resources</h4>
+                    <ul>
+                        <li><a href="developers.html">Documentation</a></li>
+                        <li><a href="#">Blog</a></li>
+                        <li><a href="#">Scam Database</a></li>
+                        <li><a href="#">Status</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-links">
+                    <h4>Company</h4>
+                    <ul>
+                        <li><a href="#">About</a></li>
+                        <li><a href="#">Contact</a></li>
+                        <li><a href="#">Privacy Policy</a></li>
+                        <li><a href="#">Terms of Service</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="footer-bottom">
+                <p>&copy; 2025 Scamlytic by Autogon AI. All rights reserved.</p>
+                <p class="footer-tagline">Protecting Nigerians from fraud, one message at a time.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="js/app.js"></script>
+</body>
+</html>
