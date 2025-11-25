@@ -1,0 +1,91 @@
+# Django Core
+Django>=4.2,<5.0
+djangorestframework>=3.14.0
+django-cors-headers>=4.3.0
+django-filter>=23.5
+django-environ>=0.11.2
+django-extensions>=3.2.3
+django-redis>=5.4.0
+
+# Database
+psycopg2-binary>=2.9.9
+dj-database-url>=2.1.0
+
+# Authentication & Security
+djangorestframework-simplejwt>=5.3.0
+django-ratelimit>=4.1.0
+argon2-cffi>=23.1.0
+cryptography>=41.0.7
+
+# Async & Task Queue
+celery>=5.3.4
+redis>=5.0.1
+django-celery-beat>=2.5.0
+django-celery-results>=2.5.1
+
+# API Integrations
+requests>=2.31.0
+aiohttp>=3.9.1
+httpx>=0.25.2
+python-whois>=0.8.0
+dnspython>=2.4.2
+
+# AI/ML & NLP
+openai>=1.6.0
+anthropic>=0.8.1
+transformers>=4.36.2
+torch>=2.1.2
+scikit-learn>=1.3.2
+nltk>=3.8.1
+spacy>=3.7.2
+textblob>=0.17.1
+langdetect>=1.0.9
+
+# Image Processing
+Pillow>=10.1.0
+imagehash>=4.3.1
+opencv-python-headless>=4.8.1.78
+
+# Data Processing
+numpy>=1.26.2
+pandas>=2.1.4
+phonenumbers>=8.13.27
+validators>=0.22.0
+tldextract>=5.1.1
+python-magic>=0.4.27
+urllib3>=2.1.0
+
+# Reporting & Documents
+reportlab>=4.0.7
+WeasyPrint>=60.1
+Jinja2>=3.1.2
+markdown>=3.5.1
+
+# Monitoring & Logging
+sentry-sdk>=1.38.0
+structlog>=23.2.0
+python-json-logger>=2.0.7
+
+# Testing
+pytest>=7.4.3
+pytest-django>=4.7.0
+pytest-cov>=4.1.0
+factory-boy>=3.3.0
+faker>=22.0.0
+
+# Development
+ipython>=8.18.1
+black>=23.12.1
+flake8>=6.1.0
+isort>=5.13.2
+
+# Production
+gunicorn>=21.2.0
+uvicorn>=0.25.0
+whitenoise>=6.6.0
+
+# Utilities
+python-dateutil>=2.8.2
+pytz>=2023.3
+pyyaml>=6.0.1
+jsonschema>=4.20.0
