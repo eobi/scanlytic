@@ -1,0 +1,870 @@
+{
+  "info": {
+    "name": "Scamlytic API",
+    "description": "Complete API collection for Scamlytic - AI-powered scam detection platform.\n\n## Authentication\n- Use Bearer token (JWT) or API Key\n- Set `{{base_url}}` and `{{api_key}}` in environment\n\n## Scam Types Detected\n- Bank Impersonation\n- BVN/NIN Phishing\n- Romance Scams\n- Job Scams\n- Lottery/Prize Scams\n- Crypto/Forex Fraud\n- Government Fee Scams\n- Catfish Profiles",
+    "version": "1.0.0",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:8000/v1",
+      "type": "string"
+    },
+    {
+      "key": "api_key",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "access_token",
+      "value": "",
+      "type": "string"
+    }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{access_token}}",
+        "type": "string"
+      }
+    ]
+  },
+  "item": [
+    {
+      "name": "Authentication",
+      "description": "User authentication and API key management",
+      "item": [
+        {
+          "name": "Register User",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"user@example.com\",\n  \"password\": \"securepassword123\",\n  \"password_confirm\": \"securepassword123\",\n  \"full_name\": \"John Doe\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/users/register/",
+              "host": ["{{base_url}}"],
+              "path": ["users", "register", ""]
+            },
+            "description": "Register a new user account"
+          }
+        },
+        {
+          "name": "Login (Get JWT Token)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var jsonData = pm.response.json();",
+                  "if (jsonData.access) {",
+                  "    pm.collectionVariables.set('access_token', jsonData.access);",
+                  "}",
+                  "if (jsonData.refresh) {",
+                  "    pm.collectionVariables.set('refresh_token', jsonData.refresh);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"user@example.com\",\n  \"password\": \"securepassword123\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/users/login/",
+              "host": ["{{base_url}}"],
+              "path": ["users", "login", ""]
+            },
+            "description": "Login and get JWT access/refresh tokens"
+          }
+        },
+        {
+          "name": "Refresh Token",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var jsonData = pm.response.json();",
+                  "if (jsonData.access) {",
+                  "    pm.collectionVariables.set('access_token', jsonData.access);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"refresh\": \"{{refresh_token}}\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/users/token/refresh/",
+              "host": ["{{base_url}}"],
+              "path": ["users", "token", "refresh", ""]
+            },
+            "description": "Refresh JWT access token"
+          }
+        },
+        {
+          "name": "Get Current User",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/users/me/",
+              "host": ["{{base_url}}"],
+              "path": ["users", "me", ""]
+            },
+            "description": "Get current authenticated user profile"
+          }
+        },
+        {
+          "name": "Create API Key",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"My App API Key\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/users/api-keys/",
+              "host": ["{{base_url}}"],
+              "path": ["users", "api-keys", ""]
+            },
+            "description": "Create a new API key for programmatic access"
+          }
+        },
+        {
+          "name": "List API Keys",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/users/api-keys/",
+              "host": ["{{base_url}}"],
+              "path": ["users", "api-keys", ""]
+            },
+            "description": "List all API keys for current user"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Analysis",
+      "description": "Core scam detection analysis endpoints",
+      "item": [
+        {
+          "name": "Analyze Message",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"content\": \"Congratulations! You have won $1,000,000 in the Nigerian National Lottery. Please send your BVN and NIN to claim your prize. Contact us at lottery@winning.com\",\n  \"context\": \"received_message\",\n  \"language\": \"en\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/analyze/message/",
+              "host": ["{{base_url}}"],
+              "path": ["analyze", "message", ""]
+            },
+            "description": "Analyze a text message for scam indicators.\n\nDetects:\n- Bank Impersonation\n- BVN/NIN Phishing\n- Romance Scams\n- Job Scams\n- Lottery/Prize Scams\n- Crypto/Forex Fraud\n- Government Fee Scams"
+          }
+        },
+        {
+          "name": "Analyze Message - Romance Scam",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"content\": \"My darling, I love you so much already! We are soulmates. I am a US soldier deployed overseas and I need $500 via Western Union for my flight ticket to come see you. Please send money urgently.\",\n  \"context\": \"dating_app\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/analyze/message/",
+              "host": ["{{base_url}}"],
+              "path": ["analyze", "message", ""]
+            },
+            "description": "Example: Romance scam detection"
+          }
+        },
+        {
+          "name": "Analyze Message - Crypto Scam",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"content\": \"ELON MUSK BITCOIN GIVEAWAY! Send 0.1 BTC to this wallet and receive 1 BTC back! Double your crypto now! Enter your seed phrase to verify: bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh\",\n  \"context\": \"social_media\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/analyze/message/",
+              "host": ["{{base_url}}"],
+              "path": ["analyze", "message", ""]
+            },
+            "description": "Example: Crypto/Forex fraud detection"
+          }
+        },
+        {
+          "name": "Analyze Message - Bank/BVN Phishing",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"content\": \"Dear Customer, Your GTBank account has been suspended. Please verify your BVN immediately at https://gtbank-verify.com or your account will be closed. Click here to update your NIN. - GTBank Nigeria\",\n  \"context\": \"sms\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/analyze/message/",
+              "host": ["{{base_url}}"],
+              "path": ["analyze", "message", ""]
+            },
+            "description": "Example: Bank impersonation and BVN/NIN phishing"
+          }
+        },
+        {
+          "name": "Analyze Message - Job Scam",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"content\": \"URGENT HIRING! Work from home and earn $5000 per week! No experience needed. Data entry job. Pay registration fee of $50 to secure your position. Limited slots available!\",\n  \"context\": \"email\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/analyze/message/",
+              "host": ["{{base_url}}"],
+              "path": ["analyze", "message", ""]
+            },
+            "description": "Example: Job scam detection"
+          }
+        },
+        {
+          "name": "Analyze Message - Government Scam",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"content\": \"IRS NOTICE: You have an unpaid tax debt of $4,500. Pay immediately or face arrest. Government relief stimulus check available - send processing fee of $200 to claim your $1,400 payment.\",\n  \"context\": \"email\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/analyze/message/",
+              "host": ["{{base_url}}"],
+              "path": ["analyze", "message", ""]
+            },
+            "description": "Example: Government fee scam detection"
+          }
+        },
+        {
+          "name": "Analyze URL",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"url\": \"https://paypal-secure-login.suspicious-site.com/verify\",\n  \"check_reputation\": true,\n  \"follow_redirects\": true\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/analyze/url/",
+              "host": ["{{base_url}}"],
+              "path": ["analyze", "url", ""]
+            },
+            "description": "Analyze a URL for phishing, malware, and scam indicators.\n\nChecks:\n- Domain reputation\n- SSL certificate\n- WHOIS data\n- VirusTotal\n- Google Safe Browsing\n- PhishTank\n- URL patterns"
+          }
+        },
+        {
+          "name": "Analyze Phone Number",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"phone_number\": \"+2348012345678\",\n  \"check_carrier\": true,\n  \"check_spam_reports\": true\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/analyze/phone/",
+              "host": ["{{base_url}}"],
+              "path": ["analyze", "phone", ""]
+            },
+            "description": "Analyze a phone number for spam, scam, and fraud indicators.\n\nChecks:\n- Number validation\n- Carrier lookup\n- Geographic location\n- Spam reports\n- VoIP detection"
+          }
+        },
+        {
+          "name": "Analyze Profile (Catfish Detection)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Jennifer Smith\",\n  \"bio\": \"Model, entrepreneur, crypto investor. Looking for love.\",\n  \"image_url\": \"https://example.com/profile-photo.jpg\",\n  \"social_links\": [\n    \"https://instagram.com/jen_smith_model\"\n  ],\n  \"platform\": \"dating_app\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/analyze/profile/",
+              "host": ["{{base_url}}"],
+              "path": ["analyze", "profile", ""]
+            },
+            "description": "Analyze a profile for catfish/fake identity indicators.\n\nChecks:\n- Reverse image search (Google Lens, TinEye)\n- AI-generated image detection\n- Stock photo detection\n- Social media verification\n- Profile consistency"
+          }
+        },
+        {
+          "name": "Quick Scan (Anonymous)",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"content\": \"You won a free iPhone! Click here to claim: bit.ly/freeiphone\",\n  \"type\": \"message\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/analyze/quick/",
+              "host": ["{{base_url}}"],
+              "path": ["analyze", "quick", ""]
+            },
+            "description": "Quick scan without authentication (limited features, rate limited)"
+          }
+        },
+        {
+          "name": "Batch Analysis",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"items\": [\n    {\n      \"type\": \"message\",\n      \"content\": \"You won the lottery! Send BVN to claim.\"\n    },\n    {\n      \"type\": \"url\",\n      \"url\": \"https://suspicious-bank-login.com\"\n    },\n    {\n      \"type\": \"phone\",\n      \"phone_number\": \"+2348012345678\"\n    }\n  ]\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/analyze/batch/",
+              "host": ["{{base_url}}"],
+              "path": ["analyze", "batch", ""]
+            },
+            "description": "Analyze multiple items in a single request (Pro plan required)"
+          }
+        },
+        {
+          "name": "Get Analysis History",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/analyze/history/?page=1&page_size=20",
+              "host": ["{{base_url}}"],
+              "path": ["analyze", "history", ""],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "page_size",
+                  "value": "20"
+                }
+              ]
+            },
+            "description": "Get user's analysis history"
+          }
+        },
+        {
+          "name": "Get Analysis Detail",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/analyze/{{request_id}}/",
+              "host": ["{{base_url}}"],
+              "path": ["analyze", "{{request_id}}", ""]
+            },
+            "description": "Get detailed analysis results by request ID"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Reports",
+      "description": "Scam reporting endpoints",
+      "item": [
+        {
+          "name": "Submit Scam Report",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"report_type\": \"phishing\",\n  \"content\": \"Received fake bank SMS asking for BVN\",\n  \"phone_number\": \"+2348012345678\",\n  \"url\": \"https://fake-bank-site.com\",\n  \"screenshots\": [],\n  \"additional_info\": \"Claimed to be from GTBank\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/reports/",
+              "host": ["{{base_url}}"],
+              "path": ["reports", ""]
+            },
+            "description": "Submit a scam report to help protect the community"
+          }
+        },
+        {
+          "name": "Get My Reports",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/reports/",
+              "host": ["{{base_url}}"],
+              "path": ["reports", ""]
+            },
+            "description": "Get list of reports submitted by current user"
+          }
+        },
+        {
+          "name": "Get Report Statistics",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/reports/stats/",
+              "host": ["{{base_url}}"],
+              "path": ["reports", "stats", ""]
+            },
+            "description": "Get aggregated scam report statistics"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Billing",
+      "description": "Subscription and billing management",
+      "item": [
+        {
+          "name": "Get Subscription Plans",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/billing/plans/",
+              "host": ["{{base_url}}"],
+              "path": ["billing", "plans", ""]
+            },
+            "description": "List all available subscription plans"
+          }
+        },
+        {
+          "name": "Get Customer Profile",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/billing/customer/",
+              "host": ["{{base_url}}"],
+              "path": ["billing", "customer", ""]
+            },
+            "description": "Get billing customer profile"
+          }
+        },
+        {
+          "name": "Get Current Subscription",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/billing/subscriptions/current/",
+              "host": ["{{base_url}}"],
+              "path": ["billing", "subscriptions", "current", ""]
+            },
+            "description": "Get current active subscription"
+          }
+        },
+        {
+          "name": "Create Subscription",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"plan_id\": \"{{plan_id}}\",\n  \"billing_period\": \"monthly\",\n  \"payment_method_id\": \"pm_xxx\",\n  \"coupon_code\": \"\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/billing/subscriptions/",
+              "host": ["{{base_url}}"],
+              "path": ["billing", "subscriptions", ""]
+            },
+            "description": "Create a new subscription"
+          }
+        },
+        {
+          "name": "Cancel Subscription",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"immediately\": false,\n  \"reason\": \"Switching to different service\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/billing/subscriptions/{{subscription_id}}/cancel/",
+              "host": ["{{base_url}}"],
+              "path": ["billing", "subscriptions", "{{subscription_id}}", "cancel", ""]
+            },
+            "description": "Cancel subscription (at period end by default)"
+          }
+        },
+        {
+          "name": "Create Checkout Session",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"plan_id\": \"{{plan_id}}\",\n  \"billing_period\": \"monthly\",\n  \"success_url\": \"http://localhost:3000/billing/success\",\n  \"cancel_url\": \"http://localhost:3000/pricing\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/billing/checkout/",
+              "host": ["{{base_url}}"],
+              "path": ["billing", "checkout", ""]
+            },
+            "description": "Create Stripe Checkout session for subscription"
+          }
+        },
+        {
+          "name": "Create Billing Portal Session",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"return_url\": \"http://localhost:3000/dashboard\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/billing/portal/",
+              "host": ["{{base_url}}"],
+              "path": ["billing", "portal", ""]
+            },
+            "description": "Create Stripe Billing Portal session for self-service"
+          }
+        },
+        {
+          "name": "Setup Payment Method",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/billing/payment-methods/setup/",
+              "host": ["{{base_url}}"],
+              "path": ["billing", "payment-methods", "setup", ""]
+            },
+            "description": "Create SetupIntent for adding payment method"
+          }
+        },
+        {
+          "name": "List Payment Methods",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/billing/payment-methods/",
+              "host": ["{{base_url}}"],
+              "path": ["billing", "payment-methods", ""]
+            },
+            "description": "List saved payment methods"
+          }
+        },
+        {
+          "name": "Get Invoices",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/billing/invoices/",
+              "host": ["{{base_url}}"],
+              "path": ["billing", "invoices", ""]
+            },
+            "description": "Get invoice history"
+          }
+        },
+        {
+          "name": "Get Usage Limits",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/billing/usage/limits/",
+              "host": ["{{base_url}}"],
+              "path": ["billing", "usage", "limits", ""]
+            },
+            "description": "Check current usage limits (daily/monthly)"
+          }
+        },
+        {
+          "name": "Get Usage Stats",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/billing/usage/stats/?days=30",
+              "host": ["{{base_url}}"],
+              "path": ["billing", "usage", "stats", ""],
+              "query": [
+                {
+                  "key": "days",
+                  "value": "30"
+                }
+              ]
+            },
+            "description": "Get usage statistics over time"
+          }
+        },
+        {
+          "name": "Validate Coupon",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"code\": \"WELCOME20\",\n  \"plan_id\": \"{{plan_id}}\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/billing/coupons/validate/",
+              "host": ["{{base_url}}"],
+              "path": ["billing", "coupons", "validate", ""]
+            },
+            "description": "Validate a coupon code"
+          }
+        },
+        {
+          "name": "Get Stripe Config",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/billing/config/",
+              "host": ["{{base_url}}"],
+              "path": ["billing", "config", ""]
+            },
+            "description": "Get Stripe publishable key for frontend"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Integrations",
+      "description": "Webhooks and third-party integrations",
+      "item": [
+        {
+          "name": "Create Webhook",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"url\": \"https://your-app.com/webhook\",\n  \"events\": [\"analysis.completed\", \"report.created\"],\n  \"secret\": \"your-webhook-secret\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/integrations/webhooks/",
+              "host": ["{{base_url}}"],
+              "path": ["integrations", "webhooks", ""]
+            },
+            "description": "Create a webhook endpoint"
+          }
+        },
+        {
+          "name": "List Webhooks",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/integrations/webhooks/",
+              "host": ["{{base_url}}"],
+              "path": ["integrations", "webhooks", ""]
+            },
+            "description": "List configured webhooks"
+          }
+        },
+        {
+          "name": "Delete Webhook",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/integrations/webhooks/{{webhook_id}}/",
+              "host": ["{{base_url}}"],
+              "path": ["integrations", "webhooks", "{{webhook_id}}", ""]
+            },
+            "description": "Delete a webhook"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Health & Status",
+      "description": "System health and status checks",
+      "item": [
+        {
+          "name": "Health Check",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8000/health/",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8000",
+              "path": ["health", ""]
+            },
+            "description": "Check API health status"
+          }
+        },
+        {
+          "name": "API Root",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8000/",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8000",
+              "path": [""]
+            },
+            "description": "Get API information and available endpoints"
+          }
+        }
+      ]
+    }
+  ]
+}
