@@ -306,6 +306,9 @@ GOOGLE_CLOUD_VISION_KEY = env('GOOGLE_CLOUD_VISION_KEY', default='')
 # SerpAPI (Search Engine Results)
 SERPAPI_API_KEY = env('SERPAPI_API_KEY', default='')
 
+# Serper.dev API (Google Search & Reverse Image Search)
+SERPER_API_KEY = env('SERPER_API_KEY', default='')
+
 # =============================================================================
 # LLM API Keys Configuration
 # =============================================================================
