@@ -1,0 +1,624 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pricing - Scamlytic | Plans for Everyone</title>
+    <meta name="description" content="Choose the right Scamlytic plan for you. Free for personal use, powerful APIs for developers, and enterprise solutions for businesses.">
+
+    <!-- Open Graph -->
+    <meta property="og:title" content="Scamlytic Pricing - Protect Yourself from Scams">
+    <meta property="og:description" content="Start free with 500 scans/month. Upgrade for unlimited protection and API access.">
+    <meta property="og:url" content="https://scamlytic.com/pricing">
+
+    <!-- Fonts & Icons -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <!-- Styles -->
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/pricing.css">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🛡️</text></svg>">
+</head>
+<body class="pricing-page">
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="index.html" class="nav-logo">
+                <i class="fas fa-shield-halved"></i>
+                <span>Scamlytic</span>
+            </a>
+            <ul class="nav-links">
+                <li><a href="index.html#scanner" class="nav-link">Scanner</a></li>
+                <li><a href="index.html#features" class="nav-link">Features</a></li>
+                <li><a href="developers.html" class="nav-link">API</a></li>
+                <li><a href="pricing.html" class="nav-link active">Pricing</a></li>
+            </ul>
+            <div class="nav-actions">
+                <a href="developers.html#signup" class="btn btn-ghost">Get API Key</a>
+                <a href="#pricing-cards" class="btn btn-primary">Go Pro</a>
+            </div>
+            <button class="mobile-menu-btn" aria-label="Toggle menu">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Hero -->
+    <section class="pricing-hero">
+        <div class="hero-bg">
+            <div class="hero-gradient"></div>
+            <div class="hero-grid"></div>
+        </div>
+        <div class="container">
+            <div class="pricing-hero-content">
+                <span class="section-badge">Simple Pricing</span>
+                <h1>Protection That <span class="gradient-text">Fits Your Needs</span></h1>
+                <p>Start free and upgrade as you grow. No hidden fees, no surprises.</p>
+
+                <div class="billing-toggle">
+                    <span class="toggle-label" data-billing="monthly">Monthly</span>
+                    <button class="toggle-switch" id="billing-toggle">
+                        <span class="toggle-slider"></span>
+                    </button>
+                    <span class="toggle-label" data-billing="annual">
+                        Annual
+                        <span class="save-badge">Save 20%</span>
+                    </span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Pricing Cards -->
+    <section class="pricing-section" id="pricing-cards">
+        <div class="container">
+            <div class="pricing-grid">
+                <!-- Free Plan -->
+                <div class="pricing-card">
+                    <div class="card-header">
+                        <span class="plan-name">Free</span>
+                        <div class="plan-price">
+                            <span class="price-amount">$0</span>
+                            <span class="price-period">/forever</span>
+                        </div>
+                        <p class="plan-desc">For personal use and casual checking</p>
+                    </div>
+                    <div class="card-body">
+                        <ul class="feature-list">
+                            <li><i class="fas fa-check"></i> 50 scans per month</li>
+                            <li><i class="fas fa-check"></i> Message analysis</li>
+                            <li><i class="fas fa-check"></i> URL checking</li>
+                            <li><i class="fas fa-check"></i> WhatsApp bot access</li>
+                            <li><i class="fas fa-check"></i> Basic threat detection</li>
+                            <li class="disabled"><i class="fas fa-times"></i> Phone number lookup</li>
+                            <li class="disabled"><i class="fas fa-times"></i> Catfish detection</li>
+                            <li class="disabled"><i class="fas fa-times"></i> API access</li>
+                            <li class="disabled"><i class="fas fa-times"></i> No watermark</li>
+                        </ul>
+                    </div>
+                    <div class="card-footer">
+                        <a href="index.html#scanner" class="btn btn-ghost btn-full">
+                            Start Free
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Pro Plan -->
+                <div class="pricing-card featured">
+                    <div class="featured-badge">Most Popular</div>
+                    <div class="card-header">
+                        <span class="plan-name">Pro</span>
+                        <div class="plan-price">
+                            <span class="price-amount" data-monthly="$4.99" data-annual="$3.99">$4.99</span>
+                            <span class="price-period">/month</span>
+                        </div>
+                        <p class="plan-desc">For individuals who need full protection</p>
+                    </div>
+                    <div class="card-body">
+                        <ul class="feature-list">
+                            <li><i class="fas fa-check"></i> <strong>Unlimited</strong> scans</li>
+                            <li><i class="fas fa-check"></i> All Free features</li>
+                            <li><i class="fas fa-check"></i> Phone number analysis</li>
+                            <li><i class="fas fa-check"></i> Catfish detection</li>
+                            <li><i class="fas fa-check"></i> Priority analysis speed</li>
+                            <li><i class="fas fa-check"></i> Scan history (30 days)</li>
+                            <li><i class="fas fa-check"></i> No watermark on shares</li>
+                            <li><i class="fas fa-check"></i> Email support</li>
+                            <li class="disabled"><i class="fas fa-times"></i> API access</li>
+                        </ul>
+                    </div>
+                    <div class="card-footer">
+                        <button class="btn btn-primary btn-full" onclick="openCheckout('pro')">
+                            <i class="fas fa-crown"></i>
+                            Upgrade to Pro
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Developer Plan -->
+                <div class="pricing-card">
+                    <div class="card-header">
+                        <span class="plan-name">Developer</span>
+                        <div class="plan-price">
+                            <span class="price-amount" data-monthly="$29" data-annual="$23">$29</span>
+                            <span class="price-period">/month</span>
+                        </div>
+                        <p class="plan-desc">For developers building scam-free apps</p>
+                    </div>
+                    <div class="card-body">
+                        <ul class="feature-list">
+                            <li><i class="fas fa-check"></i> <strong>10,000</strong> API requests/month</li>
+                            <li><i class="fas fa-check"></i> All Pro features</li>
+                            <li><i class="fas fa-check"></i> REST API access</li>
+                            <li><i class="fas fa-check"></i> All endpoints</li>
+                            <li><i class="fas fa-check"></i> 60 requests/minute</li>
+                            <li><i class="fas fa-check"></i> Usage dashboard</li>
+                            <li><i class="fas fa-check"></i> API key management</li>
+                            <li><i class="fas fa-check"></i> Priority email support</li>
+                            <li class="disabled"><i class="fas fa-times"></i> Webhooks</li>
+                        </ul>
+                    </div>
+                    <div class="card-footer">
+                        <button class="btn btn-ghost btn-full" onclick="openCheckout('developer')">
+                            <i class="fas fa-code"></i>
+                            Get API Access
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Business Plan -->
+                <div class="pricing-card">
+                    <div class="card-header">
+                        <span class="plan-name">Business</span>
+                        <div class="plan-price">
+                            <span class="price-amount" data-monthly="$99" data-annual="$79">$99</span>
+                            <span class="price-period">/month</span>
+                        </div>
+                        <p class="plan-desc">For teams and high-volume applications</p>
+                    </div>
+                    <div class="card-body">
+                        <ul class="feature-list">
+                            <li><i class="fas fa-check"></i> <strong>100,000</strong> API requests/month</li>
+                            <li><i class="fas fa-check"></i> All Developer features</li>
+                            <li><i class="fas fa-check"></i> 300 requests/minute</li>
+                            <li><i class="fas fa-check"></i> Webhooks</li>
+                            <li><i class="fas fa-check"></i> Team accounts (5 users)</li>
+                            <li><i class="fas fa-check"></i> Advanced analytics</li>
+                            <li><i class="fas fa-check"></i> Custom integrations</li>
+                            <li><i class="fas fa-check"></i> Priority support</li>
+                            <li><i class="fas fa-check"></i> 99.9% SLA</li>
+                        </ul>
+                    </div>
+                    <div class="card-footer">
+                        <button class="btn btn-ghost btn-full" onclick="openCheckout('business')">
+                            <i class="fas fa-building"></i>
+                            Start Business
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Enterprise CTA -->
+            <div class="enterprise-cta">
+                <div class="enterprise-content">
+                    <div class="enterprise-icon">
+                        <i class="fas fa-building-columns"></i>
+                    </div>
+                    <div class="enterprise-text">
+                        <h3>Enterprise</h3>
+                        <p>Need unlimited requests, custom SLAs, dedicated support, or white-label solutions?</p>
+                    </div>
+                </div>
+                <a href="mailto:enterprise@scamlytic.com" class="btn btn-primary btn-lg">
+                    <i class="fas fa-envelope"></i>
+                    Contact Sales
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Comparison -->
+    <section class="comparison-section">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-badge">Compare</span>
+                <h2>Feature <span class="gradient-text">Comparison</span></h2>
+            </div>
+
+            <div class="comparison-table-wrapper">
+                <table class="comparison-table">
+                    <thead>
+                        <tr>
+                            <th>Feature</th>
+                            <th>Free</th>
+                            <th>Pro</th>
+                            <th>Developer</th>
+                            <th>Business</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="section-row">
+                            <td colspan="5">Scanning</td>
+                        </tr>
+                        <tr>
+                            <td>Monthly Scans</td>
+                            <td>50</td>
+                            <td>Unlimited</td>
+                            <td>10,000 API</td>
+                            <td>100,000 API</td>
+                        </tr>
+                        <tr>
+                            <td>Message Analysis</td>
+                            <td><i class="fas fa-check"></i></td>
+                            <td><i class="fas fa-check"></i></td>
+                            <td><i class="fas fa-check"></i></td>
+                            <td><i class="fas fa-check"></i></td>
+                        </tr>
+                        <tr>
+                            <td>URL Checking</td>
+                            <td><i class="fas fa-check"></i></td>
+                            <td><i class="fas fa-check"></i></td>
+                            <td><i class="fas fa-check"></i></td>
+                            <td><i class="fas fa-check"></i></td>
+                        </tr>
+                        <tr>
+                            <td>Phone Number Analysis</td>
+                            <td><i class="fas fa-times"></i></td>
+                            <td><i class="fas fa-check"></i></td>
+                            <td><i class="fas fa-check"></i></td>
+                            <td><i class="fas fa-check"></i></td>
+                        </tr>
+                        <tr>
+                            <td>Catfish Detection</td>
+                            <td><i class="fas fa-times"></i></td>
+                            <td><i class="fas fa-check"></i></td>
+                            <td><i class="fas fa-check"></i></td>
+                            <td><i class="fas fa-check"></i></td>
+                        </tr>
+
+                        <tr class="section-row">
+                            <td colspan="5">Access</td>
+                        </tr>
+                        <tr>
+                            <td>Web Interface</td>
+                            <td><i class="fas fa-check"></i></td>
+                            <td><i class="fas fa-check"></i></td>
+                            <td><i class="fas fa-check"></i></td>
+                            <td><i class="fas fa-check"></i></td>
+                        </tr>
+                        <tr>
+                            <td>WhatsApp Bot</td>
+                            <td><i class="fas fa-check"></i></td>
+                            <td><i class="fas fa-check"></i></td>
+                            <td><i class="fas fa-check"></i></td>
+                            <td><i class="fas fa-check"></i></td>
+                        </tr>
+                        <tr>
+                            <td>REST API</td>
+                            <td><i class="fas fa-times"></i></td>
+                            <td><i class="fas fa-times"></i></td>
+                            <td><i class="fas fa-check"></i></td>
+                            <td><i class="fas fa-check"></i></td>
+                        </tr>
+                        <tr>
+                            <td>Webhooks</td>
+                            <td><i class="fas fa-times"></i></td>
+                            <td><i class="fas fa-times"></i></td>
+                            <td><i class="fas fa-times"></i></td>
+                            <td><i class="fas fa-check"></i></td>
+                        </tr>
+
+                        <tr class="section-row">
+                            <td colspan="5">Limits</td>
+                        </tr>
+                        <tr>
+                            <td>Rate Limit</td>
+                            <td>10/min</td>
+                            <td>30/min</td>
+                            <td>60/min</td>
+                            <td>300/min</td>
+                        </tr>
+                        <tr>
+                            <td>Response Time</td>
+                            <td>Standard</td>
+                            <td>Priority</td>
+                            <td>Priority</td>
+                            <td>Fastest</td>
+                        </tr>
+
+                        <tr class="section-row">
+                            <td colspan="5">Features</td>
+                        </tr>
+                        <tr>
+                            <td>Scan History</td>
+                            <td><i class="fas fa-times"></i></td>
+                            <td>30 days</td>
+                            <td>90 days</td>
+                            <td>Unlimited</td>
+                        </tr>
+                        <tr>
+                            <td>No Watermark</td>
+                            <td><i class="fas fa-times"></i></td>
+                            <td><i class="fas fa-check"></i></td>
+                            <td><i class="fas fa-check"></i></td>
+                            <td><i class="fas fa-check"></i></td>
+                        </tr>
+                        <tr>
+                            <td>Analytics Dashboard</td>
+                            <td><i class="fas fa-times"></i></td>
+                            <td><i class="fas fa-times"></i></td>
+                            <td>Basic</td>
+                            <td>Advanced</td>
+                        </tr>
+                        <tr>
+                            <td>Team Members</td>
+                            <td>1</td>
+                            <td>1</td>
+                            <td>1</td>
+                            <td>5</td>
+                        </tr>
+
+                        <tr class="section-row">
+                            <td colspan="5">Support</td>
+                        </tr>
+                        <tr>
+                            <td>Documentation</td>
+                            <td><i class="fas fa-check"></i></td>
+                            <td><i class="fas fa-check"></i></td>
+                            <td><i class="fas fa-check"></i></td>
+                            <td><i class="fas fa-check"></i></td>
+                        </tr>
+                        <tr>
+                            <td>Email Support</td>
+                            <td><i class="fas fa-times"></i></td>
+                            <td><i class="fas fa-check"></i></td>
+                            <td>Priority</td>
+                            <td>Priority</td>
+                        </tr>
+                        <tr>
+                            <td>SLA</td>
+                            <td><i class="fas fa-times"></i></td>
+                            <td><i class="fas fa-times"></i></td>
+                            <td><i class="fas fa-times"></i></td>
+                            <td>99.9%</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ Section -->
+    <section class="faq-section">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-badge">FAQ</span>
+                <h2>Frequently Asked <span class="gradient-text">Questions</span></h2>
+            </div>
+
+            <div class="faq-grid">
+                <div class="faq-item">
+                    <button class="faq-question">
+                        <span>Can I try Scamlytic for free?</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </button>
+                    <div class="faq-answer">
+                        <p>Yes! Our Free plan gives you 50 scans per month with access to message analysis, URL checking, and our WhatsApp bot. No credit card required.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <button class="faq-question">
+                        <span>What payment methods do you accept?</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </button>
+                    <div class="faq-answer">
+                        <p>We accept all major credit cards (Visa, Mastercard, American Express), debit cards, and local payment methods through Stripe. Nigerian users can also pay via Paystack.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <button class="faq-question">
+                        <span>Can I cancel my subscription anytime?</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </button>
+                    <div class="faq-answer">
+                        <p>Absolutely. You can cancel your subscription at any time from your account settings. You'll retain access until the end of your billing period.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <button class="faq-question">
+                        <span>What happens if I exceed my API limit?</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </button>
+                    <div class="faq-answer">
+                        <p>You'll receive a 429 rate limit response. We'll notify you via email before you hit your limit. You can upgrade your plan anytime to increase your quota.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <button class="faq-question">
+                        <span>Do you offer refunds?</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </button>
+                    <div class="faq-answer">
+                        <p>Yes, we offer a 7-day money-back guarantee for all paid plans. If you're not satisfied, contact us within 7 days of your purchase for a full refund.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <button class="faq-question">
+                        <span>Is my data secure?</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </button>
+                    <div class="faq-answer">
+                        <p>Yes. We use industry-standard encryption (TLS 1.3) for all data in transit. We don't store the content of your scans beyond processing. Your payment info is handled by Stripe and never touches our servers.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <button class="faq-question">
+                        <span>Can I get a discount for NGOs or educational institutions?</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </button>
+                    <div class="faq-answer">
+                        <p>Yes! We offer special discounts for non-profits, NGOs, and educational institutions. Contact us at partnerships@scamlytic.com with proof of your organization's status.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <button class="faq-question">
+                        <span>Do you have an affiliate program?</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </button>
+                    <div class="faq-answer">
+                        <p>Yes! Earn 30% recurring commission for every customer you refer. Sign up for our affiliate program at scamlytic.com/affiliates (coming soon).</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="final-cta">
+        <div class="container">
+            <div class="cta-content">
+                <h2>Ready to Stay Safe?</h2>
+                <p>Join 50,000+ users protecting themselves from scams every day.</p>
+                <div class="cta-buttons">
+                    <a href="index.html#scanner" class="btn btn-primary btn-xl">
+                        <i class="fas fa-shield-halved"></i>
+                        Start Free
+                    </a>
+                    <a href="developers.html" class="btn btn-ghost btn-xl">
+                        <i class="fas fa-code"></i>
+                        View API Docs
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Checkout Modal -->
+    <div class="modal checkout-modal" id="checkout-modal">
+        <div class="modal-backdrop"></div>
+        <div class="modal-content">
+            <button class="modal-close" id="checkout-close">
+                <i class="fas fa-times"></i>
+            </button>
+
+            <div class="checkout-content">
+                <h2>Complete Your Order</h2>
+                <div class="checkout-plan" id="checkout-plan-info">
+                    <span class="plan-tag">Pro Plan</span>
+                    <span class="plan-price">$4.99/month</span>
+                </div>
+
+                <form class="checkout-form" id="checkout-form">
+                    <div class="form-group">
+                        <label for="checkout-email">Email Address</label>
+                        <input type="email" id="checkout-email" placeholder="john@example.com" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="checkout-card">Card Details</label>
+                        <div class="card-input">
+                            <input type="text" id="checkout-card" placeholder="1234 5678 9012 3456" maxlength="19" required>
+                            <div class="card-icons">
+                                <i class="fab fa-cc-visa"></i>
+                                <i class="fab fa-cc-mastercard"></i>
+                                <i class="fab fa-cc-amex"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="checkout-expiry">Expiry</label>
+                            <input type="text" id="checkout-expiry" placeholder="MM/YY" maxlength="5" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="checkout-cvc">CVC</label>
+                            <input type="text" id="checkout-cvc" placeholder="123" maxlength="4" required>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary btn-full btn-lg">
+                        <i class="fas fa-lock"></i>
+                        Subscribe Now
+                    </button>
+
+                    <p class="checkout-note">
+                        <i class="fas fa-shield-check"></i>
+                        Secured by Stripe. Cancel anytime.
+                    </p>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-brand">
+                    <a href="index.html" class="footer-logo">
+                        <i class="fas fa-shield-halved"></i>
+                        <span>Scamlytic</span>
+                    </a>
+                    <p>AI-powered scam detection for everyone. Making fraud prevention accessible to all.</p>
+                    <div class="footer-social">
+                        <a href="#" aria-label="Twitter"><i class="fab fa-x-twitter"></i></a>
+                        <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                        <a href="#" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+                        <a href="#" aria-label="WhatsApp"><i class="fab fa-whatsapp"></i></a>
+                    </div>
+                </div>
+
+                <div class="footer-links">
+                    <h4>Product</h4>
+                    <ul>
+                        <li><a href="index.html#scanner">Scanner</a></li>
+                        <li><a href="developers.html">API</a></li>
+                        <li><a href="pricing.html">Pricing</a></li>
+                        <li><a href="#">WhatsApp Bot</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-links">
+                    <h4>Resources</h4>
+                    <ul>
+                        <li><a href="developers.html">Documentation</a></li>
+                        <li><a href="#">Blog</a></li>
+                        <li><a href="#">Scam Database</a></li>
+                        <li><a href="#">Status</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-links">
+                    <h4>Company</h4>
+                    <ul>
+                        <li><a href="#">About</a></li>
+                        <li><a href="#">Contact</a></li>
+                        <li><a href="#">Privacy Policy</a></li>
+                        <li><a href="#">Terms of Service</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="footer-bottom">
+                <p>&copy; 2025 Scamlytic by Autogon AI. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="js/pricing.js"></script>
+</body>
+</html>
