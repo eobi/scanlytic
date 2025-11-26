@@ -56,7 +56,7 @@ class Report(TimeStampedModel):
     # Related analyses
     analyses = models.ManyToManyField(
         'analysis.AnalysisResult',
-        related_name='reports',
+        related_name='generated_reports',
         blank=True
     )
 

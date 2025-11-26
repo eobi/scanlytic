@@ -359,7 +359,7 @@ class ScamReport(TimeStampedModel):
         on_delete=models.SET_NULL,
         null=True,
         blank=True,
-        related_name='reports'
+        related_name='scam_reports_filed'
     )
 
     # Report content
